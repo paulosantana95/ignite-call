@@ -1,11 +1,8 @@
-import NextAuth from 'next-auth'
+import 'next-auth'
+import { User as PrismaUser } from '@prisma/client'
 
 declare module 'next-auth' {
-  export interface User {
-    id: string
-    name: string
-    email: string
-    username: string
-    avatar_url: string
+  export interface User extends PrismaUser {
+    created_at?: Date | String
   }
 }
