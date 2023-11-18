@@ -33,8 +33,8 @@ export default function Register() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
   })
-
   const query = useSearchParams()
+  const router = useRouter()
 
   useEffect(() => {
     const username = query.get('username')
@@ -43,8 +43,6 @@ export default function Register() {
       setValue('username', username)
     }
   }, [query, setValue])
-
-  const router = useRouter()
 
   async function handleRegister(data: RegisterFormData) {
     try {
