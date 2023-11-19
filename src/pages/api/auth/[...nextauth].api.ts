@@ -1,11 +1,11 @@
 import { PrismaAdapter } from '@/lib/auth/prisma-adapter'
 import NextAuth, { NextAuthOptions } from 'next-auth'
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse, NextPageContext } from 'next'
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google'
 
 export function buildNextAuthOptions(
-  req: NextApiRequest,
-  res: NextApiResponse,
+  req: NextApiRequest | NextPageContext['req'],
+  res: NextApiResponse | NextPageContext['res'],
 ): NextAuthOptions {
   return {
     adapter: PrismaAdapter(req, res),
@@ -43,11 +43,17 @@ export function buildNextAuthOptions(
 
         return true
       },
+
+      async session({ session, user }) {
+        return {
+          ...session,
+          user,
+        }
+      },
     },
   }
 }
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-  // Do whatever you want here, before the request is passed down to `NextAuth`
   return await NextAuth(req, res, buildNextAuthOptions(req, res))
 }
