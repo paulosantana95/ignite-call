@@ -13,7 +13,7 @@ export const UserHeader = styled('div', {
 
   [`${Heading}`]: {
     lineHeight: '$base',
-    marginTop: '$8',
+    marginTop: '$2',
   },
 
   [`${Text}`]: {
