@@ -16,6 +16,8 @@ import { useSession } from 'next-auth/react'
 import { buildNextAuthOptions } from '@/pages/api/auth/[...nextauth].api'
 import { GetServerSideProps } from 'next'
 import { getServerSession } from 'next-auth'
+import { api } from '@/lib/axios'
+import { useRouter } from 'next/router'
 
 const updateProfileFormSchema = z.object({
   bio: z.string(),
@@ -33,15 +35,23 @@ export default function UpdateProfile() {
   })
 
   const session = useSession()
+  const router = useRouter()
+
+  const avatarUrl = session.data?.user.avatar_url ?? ''
+  const username = session.data?.user.name ?? ''
 
   async function handleUpdateProfile(data: UpdateProfileFormData) {
-    console.log(data)
+    await api.put('/users/profile', {
+      bio: data.bio,
+    })
+
+    await router.push(`/schedule/${username}`)
   }
 
   return (
     <Container>
       <Header>
-        <Heading as="strong">Bem-vindo ao Ignite Call!</Heading>
+        <Heading as="strong">Só mais um pouco...</Heading>
         <Text>
           Precisamos de algumas informações para criar seu perfil! Ah, você pode
           editar essas informações depois.
@@ -53,15 +63,14 @@ export default function UpdateProfile() {
       <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
         <label>
           <Text>Foto de perfil</Text>
-          <Avatar
-            src={session.data?.user.avatar_url}
-            referrerPolicy="no-referrer"
-            alt={session.data?.user.name}
-          />
+          <Avatar src={avatarUrl} referrerPolicy="no-referrer" alt={username} />
         </label>
         <label>
           <Text size="sm">Sobre você</Text>
-          <TextArea placeholder="Seu nome e sobrenome" {...register('bio')} />
+          <TextArea
+            placeholder="Fale um pouco mais sobre você..."
+            {...register('bio')}
+          />
           <FormAnnotation size="sm">
             Fale um pouco sobre você. Isto será exibido em sua página pessoal.
           </FormAnnotation>
