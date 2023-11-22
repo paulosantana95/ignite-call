@@ -38,7 +38,7 @@ export default function UpdateProfile() {
   const router = useRouter()
 
   const avatarUrl = session.data?.user.avatar_url ?? ''
-  const username = session.data?.user.name ?? ''
+  const username = session.data?.user.username ?? ''
 
   async function handleUpdateProfile(data: UpdateProfileFormData) {
     await api.put('/users/profile', {
